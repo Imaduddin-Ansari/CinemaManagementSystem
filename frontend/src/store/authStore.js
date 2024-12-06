@@ -22,5 +22,17 @@ export const useAuthStore=create((set)=>({
             set({error:error.response.data.message||"Error Signing Up",isLoading:false})
             throw error;
         }
-    } 
+    },
+
+    login: async(email,password)=>{
+        set({isLoading:true,error:null})
+        try{
+            const response=await axios.post(`${API_URL}/login`,{email,password});
+            set({user:response.data.token,isAuthenticated:true,isLoading:false,error:null})
+        } catch(error)
+        {
+            set({error:error.response.data.message||"Error Logging In",isLoading:false})
+            throw error;
+        }
+    }
 }))

@@ -1,16 +1,26 @@
 import React,{useState} from 'react'
-import {Link} from 'react-router-dom'
+import {Link,useNavigate} from 'react-router-dom'
 import {Button} from '../components/button'
 import { Input } from '../components/Input';
-import { Mail,Lock } from "lucide-react"
+import { Mail,Lock,Loader } from "lucide-react"
+import { useAuthStore } from '../store/authStore';
 
 export const LoginPage = () => {
 
   const [email, setEmail]=useState('');
   const [password, setPassword]=useState('');
+  const {login,isLoading,error}=useAuthStore();
+  const navigate=useNavigate();
 
-const handleSignUp=(e)=>{
+const handleLogin=async (e)=>{
     e.preventDefault();
+    try{
+      await login(email,password);
+      navigate("/");
+    } catch(error)
+    {
+      console.log(error);
+    }
 }
 
   return (
@@ -21,7 +31,7 @@ const handleSignUp=(e)=>{
     <h2 class='text-2xl font-bold mb-10 text-center text-transparent bg-clip-text text-white'>
     Enjoy the world of entertainment. 
     </h2> 
-     <form onSubmit={handleSignUp}>
+     <form onSubmit={handleLogin}>
       <Input 
         icon={Mail}
         type='email'
@@ -37,9 +47,11 @@ const handleSignUp=(e)=>{
         onChange={(e)=> setPassword(e.target.value)}
       />
 
+      {error && <p class='ml-16 text-red-600 font-semibold mt-2'>{error}</p>}
+
        <div className="space-y-4 flex flex-col justify-center items-center py-3">
             <Button type="submit">
-            <Link to={"/login"}>Sign In</Link>
+            {isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : "Sign In"}
             </Button>
             <Button type="button" variant="outline">
               <Link to={"/signup"}>Sign Up</Link>
