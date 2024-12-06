@@ -4,27 +4,36 @@ const User = require('../models/User');
 
 // User Registration
 const registerUser = async (req, res) => {
-  const { name, email, password, phone, address, role } = req.body;
+  const { name, email, password } = req.body; // Only require name, email, and password
 
   try {
+    // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ error: 'Email already registered' });
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Count the current number of users to assign a new ID
     const userCount = await User.countDocuments();
 
+    // Create the new user with default values for other fields
     const newUser = new User({
       id: userCount + 1,
       name,
       email,
       password: hashedPassword,
-      role: role || 'user',
-      contact: { phone, address },
+      role: 'user', // Default role
+      contact: { phone: '', address: '' }, // Default empty contact info
     });
 
+    // Save the new user
     await newUser.save();
+
+    // Respond with success
     res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
   } catch (error) {
+    // Handle server errors
     res.status(500).json({ error: error.message });
   }
 };
