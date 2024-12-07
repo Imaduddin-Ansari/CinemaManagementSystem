@@ -58,7 +58,7 @@ export const Navbar = ({ userName, onSearch }) => {
 
           {/* User Name and Profile */}
           <div className="flex items-center justify-end gap-4">
-            <span className="hidden text-lg font-semibold md:block">{userName}</span>
+            <span className="hidden text-lg font-semibold md:block"></span>
             <button
               onClick={handleMenuToggle}
               className="flex items-center text-white space-x-2 text-xl"

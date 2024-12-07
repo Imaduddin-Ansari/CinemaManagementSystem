@@ -5,6 +5,7 @@ import { Play, Info } from "lucide-react";
 import { useGetTrendingContent } from "../../store/useGetTrendingContent";
 import { useGetMovies } from "../../store/useGetMovies"; // Import the custom hook
 import { ORIGINAL_IMG_BASE_URL } from "../../utils/constants";
+import axios from "axios";
 
 export const HomePageUser = () => {
   const { trendingContent } = useGetTrendingContent();
@@ -18,6 +19,20 @@ export const HomePageUser = () => {
   };
 
   const closeModal = () => setSelectedMovie(null);
+
+  const handleAddToWishlist = async (movieId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/wishlist/add",
+        { movieId },
+        { withCredentials: true }
+      );
+      alert(response.data.message || "Movie added to wishlist");
+    } catch (error) {
+      console.error("Error adding to wishlist:", error.response?.data?.error || error.message);
+      alert(error.response?.data?.error || "An error occurred while adding to the wishlist");
+    }
+  };
 
   return (
     <div className="flex flex-col w-full">
@@ -46,7 +61,6 @@ export const HomePageUser = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-5" />
 
         {/* Hero Content */}
-        <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-5" />
         <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center px-8 md:px-16 lg:px-32">
           <div className="bg-gradient-to-b from-black via-transparent to-transparent absolute w-full h-full top-0 left-0 z-5" />
           <div className="max-w-2xl">
@@ -87,33 +101,32 @@ export const HomePageUser = () => {
 
       {/* Trending Movies Section */}
       <div className="w-full px-8 py-6 bg-gradient-to-br from-black to-red-950">
-  <h2 className="text-2xl font-bold text-white mb-4">Now Showing</h2>
-  {loading && <p className="text-white">Loading movies...</p>}
-  {error && <p className="text-red-500">{error}</p>}
-  {!loading && !error && (
-    <div className="flex overflow-x-auto space-x-4">
-      {movies.map((movie) => (
-        <div
-          key={movie._id}
-          className="relative cursor-pointer flex-shrink-0 group"
-          onClick={() => setSelectedMovie(movie)}
-        >
-          {/* Movie Poster */}
-          <img
-            src={movie.posterUrl}
-            alt={movie.title}
-            className="w-32 h-48 object-cover rounded transform transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
-          />
-          {/* Title Overlay */}
-          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white text-center p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <p className="text-sm font-medium">{movie.title}</p>
+        <h2 className="text-2xl font-bold text-white mb-4">Now Showing</h2>
+        {loading && <p className="text-white">Loading movies...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && !error && (
+          <div className="flex overflow-x-auto space-x-4">
+            {movies.map((movie) => (
+              <div
+                key={movie._id}
+                className="relative cursor-pointer flex-shrink-0 group"
+                onClick={() => setSelectedMovie(movie)}
+              >
+                {/* Movie Poster */}
+                <img
+                  src={movie.posterUrl}
+                  alt={movie.title}
+                  className="w-32 h-48 object-cover rounded transform transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
+                />
+                {/* Title Overlay */}
+                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white text-center p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-sm font-medium">{movie.title}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
+        )}
+      </div>
 
       {/* Modal for Movie Details */}
       {selectedMovie && (
@@ -124,6 +137,20 @@ export const HomePageUser = () => {
             <p className="mt-4">{selectedMovie.description}</p>
             <p className="mt-4">Rating: {selectedMovie.rating} / 10</p>
             <p className="mt-4">Duration: {selectedMovie.duration} minutes</p>
+            <div className="mt-6 flex justify-between">
+              <button
+                className="bg-blue-600 text-white py-2 px-4 rounded"
+                onClick={() => console.log("Booking functionality here")}
+              >
+                Book
+              </button>
+              <button
+                className="bg-green-600 text-white py-2 px-4 rounded"
+                onClick={() => handleAddToWishlist(selectedMovie._id)}
+              >
+                Add to Wishlist
+              </button>
+            </div>
             <button
               className="mt-6 bg-red-600 text-white py-2 px-4 rounded"
               onClick={closeModal}
