@@ -4,22 +4,23 @@ const User = require('../models/User');
 
 // User Registration
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body; // Only require name, email, and password
+  const { name, email, password } = req.body;
 
   try {
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ error: 'Email already registered' });
+    if (existingUser) return res.status(400).json({success:false,message:"Email already registered",error: 'Email already registered' });
+
+    if(!email||!password||!name)
+    {
+      return res.status(400).json({success:false,message:"All Fields Are Required"})
+    }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Count the current number of users to assign a new ID
-    const userCount = await User.countDocuments();
-
-    // Create the new user with default values for other fields
+    // Create the new user
     const newUser = new User({
-      id: userCount + 1,
       name,
       email,
       password: hashedPassword,
@@ -31,7 +32,7 @@ const registerUser = async (req, res) => {
     await newUser.save();
 
     // Respond with success
-    res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
+    res.status(201).json({ message: 'User registered successfully', userId: newUser._id });
   } catch (error) {
     // Handle server errors
     res.status(500).json({ error: error.message });
@@ -43,23 +44,40 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+
+    if(!email||!password)
+      {
+        return res.status(400).json({success:false,message:"All Fields Are Required"})
+      }
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({success:false,message:"User not found", error: 'User not found'});
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!isMatch) return res.status(401).json({success:false,message:"Invalid credentials", error: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+const logoutUser=async(req,res)=>{
+  try {
+    res.clearCookie('token');
+    res.status(200).json({success:true,message:"Logged Out Successfully"});
+  } catch(error)
+  {
+    console.log("Error in Logout Controller",error.message);
+    rest.status(500).json({success:false,message:"Internal server error"});
+  }
+}
+
 // View Profile
 const viewProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ id: req.user.id }).select('-password');
+    const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.json(user);
@@ -73,7 +91,7 @@ const editProfile = async (req, res) => {
   const { name, phone, address } = req.body;
 
   try {
-    const user = await User.findOne({ id: req.user.id });
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     if (name) user.name = name;
@@ -87,4 +105,5 @@ const editProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, viewProfile, editProfile };
+
+module.exports = { registerUser, loginUser, logoutUser, viewProfile, editProfile };
