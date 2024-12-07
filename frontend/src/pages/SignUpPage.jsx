@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import {Button} from '../components/button'
 import { Input } from '../components/Input';
 import { User,Mail,Lock,Loader } from "lucide-react"
- import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store/authStore';
 
 export const SignUpPage = () => {
 
@@ -17,15 +17,15 @@ const handleSignUp=async (e)=>{
     e.preventDefault();
     try{
       await signup(email,password,name);
-      navigate("/");
+      navigate("/login");
     } catch(error)
     {
-      console.log(error);
+      console.log(error);           
     }
 }
 return ( 
   <div class='h-auto w-2/5 bg-black overflow-hidden rounded-2xl p-9'> 
-    <h2 class='text-5xl font-bold mb-6 text-center text-transparent bg-clip-text text-red-800 mt-3'> 
+    <h2 class='text-5xl font-bold mb-6 text-center text-transparent bg-clip-text text-red-700 mt-3'> 
     CINEMOVIE
     </h2> 
     <h2 class='text-2xl font-bold mb-10 text-center text-transparent bg-clip-text text-white'>

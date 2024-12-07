@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+  // Get the token from the cookies
+  const token = req.cookies["token"];
 
   if (!token) return res.status(403).json({ error: 'No token provided' });
 

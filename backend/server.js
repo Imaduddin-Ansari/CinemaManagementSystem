@@ -8,8 +8,10 @@ const movieRoutes = require('./routes/user_routes/movieRoutes');
 const bookingRoutes = require('./routes/user_routes/bookingRoutes');
 const reviewRoutes = require('./routes/user_routes//reviewRoutes');
 const wishlistRoutes = require('./routes/user_routes//wishlistRoutes');
+const cookieParser = require('cookie-parser');
 
 const app = express();
+app.use(cookieParser());
 
 app.use(cors({
     origin: ["http://localhost:5173"],
