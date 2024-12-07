@@ -7,6 +7,8 @@ const reviewSchema = new mongoose.Schema(
     movieId: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, default: Date.now },
+    reply: { type: String, required: false },
+    status: { type: String, enum: ['open', 'closed'], default: 'open' },
   },
   { timestamps: true }
 );

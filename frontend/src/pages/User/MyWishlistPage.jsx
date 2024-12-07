@@ -39,10 +39,10 @@ export const MyWishlistPage = () => {
   return (
     <>
       <Navbar userName="" />
-      <div className='absolute top-28'>
-      <h1 className="text-3xl font-bold mb-6 text-white">My Wishlist</h1>
+      <div className="absolute top-28" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <h1 className="text-3xl font-bold mb-6 text-white">My Wishlist</h1>
       </div>
-      <div className="p-6">
+      <div className="p-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
         {loading ? (
           <p className="text-gray-500">Loading wishlist...</p>
         ) : error ? (

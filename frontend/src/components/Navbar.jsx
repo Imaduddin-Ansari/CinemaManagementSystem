@@ -69,7 +69,7 @@ export const Navbar = ({ userName, onSearch }) => {
             {/* Dropdown Menu */}
             {isMenuOpen && (
               <div
-                className="absolute md:top-14 top-28 right-6 bg-black/90 text-white rounded-lg shadow-lg w-48"
+                className="absolute md:top-14 top-28 right-6 bg-black text-white rounded-lg shadow-lg w-48"
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
                 <Link

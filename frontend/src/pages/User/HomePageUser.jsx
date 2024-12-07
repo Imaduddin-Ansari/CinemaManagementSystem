@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "../../components/Navbar";
-import { Play, Info } from "lucide-react";
+import { Play, Info, X, Heart, Star } from "lucide-react";
 import { useGetTrendingContent } from "../../store/useGetTrendingContent";
-import { useGetMovies } from "../../store/useGetMovies"; // Import the custom hook
+import { useGetMovies } from "../../store/useGetMovies";
 import { ORIGINAL_IMG_BASE_URL } from "../../utils/constants";
 import axios from "axios";
 
 export const HomePageUser = () => {
   const { trendingContent } = useGetTrendingContent();
-  const { movies, loading, error } = useGetMovies(); // Use the custom hook
+  const { movies, loading, error } = useGetMovies();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewText, setReviewText] = useState("");
+  const [stars, setStars] = useState(0);
+
+  useEffect(() => {
+    if (selectedMovie) {
+      axios
+        .get(`http://localhost:3000/api/reviews/${selectedMovie._id}`)
+        .then((response) => {
+          console.log("Reviews API response:", response.data); 
+          setReviews(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching reviews:", error.message);
+        });
+    }
+  }, [selectedMovie]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -34,6 +51,31 @@ export const HomePageUser = () => {
     }
   };
 
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault(); // Prevent the form's default behavior
+    if (stars === 0 || !reviewText) {
+      alert("Please add a rating and comment");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/reviews/add",
+        { stars, comment: reviewText, movieId: selectedMovie._id },
+        { withCredentials: true }
+      );
+      alert("Review added successfully!");
+      setReviewText(""); // Clear review text
+      setStars(0); // Reset stars
+      // Fetch updated reviews
+      setReviews((prevReviews) => [...prevReviews, response.data.review]);
+    } catch (error) {
+      console.error("Error submitting review:", error.message);
+      alert("An error occurred while submitting your review");
+    }
+  };
+  
+
   return (
     <div className="flex flex-col w-full">
       {/* Navbar */}
@@ -43,9 +85,7 @@ export const HomePageUser = () => {
       <div className="relative min-h-screen flex flex-col items-center justify-center bg-transparent text-white font-poppins">
         {searchQuery && (
           <div className="mt-5 text-center">
-            <p className="text-gray-400 text-lg font-medium mb-2">
-              Search Results For:
-            </p>
+            <p className="text-gray-400 text-lg font-medium mb-2">Search Results For:</p>
             <span className="text-lg font-medium">
               <strong>{searchQuery}</strong>
             </span>
@@ -130,36 +170,113 @@ export const HomePageUser = () => {
 
       {/* Modal for Movie Details */}
       {selectedMovie && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="bg-black rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 text-white">
-            <h3 className="text-2xl font-bold">{selectedMovie.title}</h3>
-            <p className="text-sm mt-1">{selectedMovie.genre.join(", ")}</p>
-            <p className="mt-4">{selectedMovie.description}</p>
-            <p className="mt-4">Rating: {selectedMovie.rating} / 10</p>
-            <p className="mt-4">Duration: {selectedMovie.duration} minutes</p>
-            <div className="mt-6 flex justify-between">
-              <button
-                className="bg-blue-600 text-white py-2 px-4 rounded"
-                onClick={() => console.log("Booking functionality here")}
-              >
-                Book
-              </button>
-              <button
-                className="bg-green-600 text-white py-2 px-4 rounded"
-                onClick={() => handleAddToWishlist(selectedMovie._id)}
-              >
-                Add to Wishlist
-              </button>
-            </div>
-            <button
-              className="mt-6 bg-red-600 text-white py-2 px-4 rounded"
-              onClick={closeModal}
-            >
-              Close
-            </button>
-          </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-black rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 text-white relative max-h-[90vh] overflow-y-auto">
+      <X
+        className="absolute top-4 right-4 cursor-pointer text-gray-400 hover:scale-110 transition hover:text-white"
+        size={24}
+        onClick={closeModal}
+      />
+      <div className="flex">
+        <img
+          src={selectedMovie.posterUrl}
+          alt={selectedMovie.title}
+          className="w-32 h-48 object-cover rounded mr-4"
+        />
+        <div>
+          <h3 className="text-2xl font-bold">{selectedMovie.title}</h3>
+          <p className="text-sm mt-1">{selectedMovie.genre.join(", ")}</p>
+          <p className="mt-4">{selectedMovie.description}</p>
+          <p className="mt-4">Rating: {selectedMovie.rating} / 5</p>
+          <p className="mt-4">Duration: {selectedMovie.duration} minutes</p>
         </div>
-      )}
+      </div>
+
+      <div className="mt-6 flex justify-between">
+        <button
+          className="bg-red-700 text-white py-2 px-4 rounded hover:scale-110 transition hover:bg-red-900"
+          onClick={() => console.log("Booking functionality here")}
+        >
+          Book
+        </button>
+        <button
+          className="bg-transparent text-white p-2 rounded-full"
+          onClick={() => handleAddToWishlist(selectedMovie._id)}
+        >
+          <Heart className="inline-block text-red-600 hover:fill-red-600 hover:scale-110 transition " size={24} />
+        </button>
+      </div>
+
+      <div className="mt-6">
+  <h4 className="text-lg font-bold">Add a Review</h4>
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      console.log("Form submitted");
+      handleReviewSubmit(e);
+    }}
+    className="mt-4"
+  >
+    <div className="flex mt-2">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={`cursor-pointer text-red-600 hover:fill-red-600 hover:scale-110 transition ${
+            star <= stars ? "fill-red-600" : ""
+          }`}
+          size={24}
+          onClick={() => setStars(star)}
+        />
+      ))}
+    </div>
+    <textarea
+      className="w-full p-2 mt-2 bg-black text-white border border-gray-600 rounded-sm h-20"
+      rows="4"
+      value={reviewText}
+      onChange={(e) => setReviewText(e.target.value)}
+      placeholder="Write your review here"
+    />
+    <button
+      type="submit"
+      className="mt-4 bg-red-700 text-white py-2 px-4 rounded hover:scale-110 transition hover:bg-red-900"
+    >
+      Submit Review
+    </button>
+  </form>
+</div>
+
+
+
+      {/* Display Reviews */}
+      <div className="mt-6">
+        <h4 className="text-lg font-bold">Reviews</h4>
+        <div className="h-64 overflow-y-auto mt-4 space-y-4">
+          {reviews.length > 0 ? (
+            reviews.map((review) => (
+              <div key={review._id} className="p-4 bg-black border border-gray-600 rounded-md">
+                <p className="text-white font-semibold">
+                  <strong>{review.userId.name}</strong>
+                </p>
+                <div className="flex mt-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`text-red-600 ${star <= review.stars ? "fill-red-600" : "fill-transparent"} `}
+                      size={16}
+                    />
+                  ))}
+                </div>
+                <p className="mt-2 text-white">{review.comment}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-white">No reviews yet for this movie</p>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
