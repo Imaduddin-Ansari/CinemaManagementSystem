@@ -2,29 +2,31 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// User Registration
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({success:false,message:"Email already registered",error: 'Email already registered' });
 
-    if(!email||!password||!name)
-    {
-      return res.status(400).json({success:false,message:"All Fields Are Required"})
+    // Validate required fields
+    if(!email || !password || !name) {
+      return res.status(400).json({success:false,message:"All Fields Are Required"});
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Default role to 'user' if not provided
+    const userRole = role || 'user'; // If no role is provided, it will default to 'user'
 
     // Create the new user
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      role: 'user', // Default role
+      role: userRole,  // Use the role passed in or default to 'user'
       contact: { phone: '', address: '' }, // Default empty contact info
     });
 

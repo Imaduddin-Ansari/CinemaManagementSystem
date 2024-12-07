@@ -17,7 +17,7 @@ const handleSignUp=async (e)=>{
     e.preventDefault();
     try{
       await signup(email,password,name);
-      navigate("/login");
+      navigate("/");
     } catch(error)
     {
       console.log(error);           
@@ -61,7 +61,7 @@ return (
             {isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : "Register"}
             </Button>
             <Button type="button" variant="outline">
-              <Link to={"/login"}>
+              <Link to={"/"}>
               Sign In
               </Link>
             </Button>

@@ -3,7 +3,7 @@ const { fetchFromTMDB } = require('../../services/tmdb.service');
 
 // Add Movie
 exports.addMovie = async (req, res) => {
-  const { title, genre, releaseDate, rating, description, duration, posterUrl, trailerUrl } = req.body;
+  const { title, genre, releaseDate, rating, description, duration, posterUrl } = req.body;
   try {
     const newMovie = new Movie({
       title,
@@ -13,7 +13,6 @@ exports.addMovie = async (req, res) => {
       description,
       duration,
       posterUrl,
-      trailerUrl, // Include the trailerUrl in the new movie creation
     });
     await newMovie.save();
     res.status(201).json({ message: 'Movie added successfully', movieId: newMovie._id });

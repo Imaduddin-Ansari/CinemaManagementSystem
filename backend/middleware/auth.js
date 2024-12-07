@@ -5,11 +5,14 @@ const authMiddleware = async (req, res, next) => {
   // Get the token from the cookies
   const token = req.cookies["token"];
 
-  if (!token) return res.status(403).json({ error: 'No token provided' });
-
+  if (!token) return res.status(403).json({ error: 'No token provided' })
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id); // Set the user in req.user
+    req.user={
+      id:decoded.id,
+      role:decoded.role,
+    }
     if (!req.user) return res.status(404).json({ error: 'User not found' });
     next(); // Continue to the route handler
   } catch (error) {

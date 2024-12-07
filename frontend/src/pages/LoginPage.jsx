@@ -9,14 +9,20 @@ export const LoginPage = () => {
 
   const [email, setEmail]=useState('');
   const [password, setPassword]=useState('');
-  const {login,isLoading,error}=useAuthStore();
+  const {login,isLoading,error,role}=useAuthStore();
   const navigate=useNavigate();
 
 const handleLogin=async (e)=>{
     e.preventDefault();
     try{
       await login(email,password);
-      navigate("/");
+      if (role === "employee") {
+        navigate("/employee-dashboard");
+      } else if (role === "user") {
+        navigate("/user-dashboard");
+      } else if (role === "admin") {
+        navigate("/admin-dashboard");
+      }
     } catch(error)
     {
       console.log(error);
