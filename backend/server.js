@@ -12,6 +12,8 @@ const cookieParser = require('cookie-parser');
 //Employee Routes
 const dashboardRoutes = require('./routes/employee_routes/dashboardRoutes');
 const bookingManagementRoutes = require('./routes/employee_routes/bookingManagementRoutes');
+const customerSupportRoutes = require('./routes/employee_routes/customerSupportRoutes');
+
 
 const app = express();
 app.use(cookieParser());
@@ -36,7 +38,7 @@ app.use('/api/wishlist', wishlistRoutes);
 // Routes Employee
 app.use('/employee', dashboardRoutes);
 app.use('/employee', bookingManagementRoutes);
-
+app.use('/api/customer-support', customerSupportRoutes);
 
 // Database Connection
 connectDB();

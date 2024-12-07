@@ -1,60 +1,79 @@
-// Import necessary models
-const Booking = require('../../models/Booking'); // Path to Booking model
-const mongoose = require('mongoose');
+const Review = require('../../models/Review');
 
-// Function to fetch booking records for a specific customer
-const getBookingRecords = async (req, res) => {
+/**
+ * Fetch all reviews, including their associated movie and user details.
+ */
+const getAllReviews = async (req, res) => {
   try {
-    const { customerId } = req.params; // Get customerId from request parameters
+    const reviews = await Review.find()
+      .populate('movieId', 'title') // Populate movie details (e.g., title)
+      .populate('userId', 'name email') // Populate user details (e.g., name, email)
+      .sort({ createdAt: -1 }); // Sort reviews by creation date
 
-    // Validate customerId
-    if (!mongoose.Types.ObjectId.isValid(customerId)) {
-      return res.status(400).json({ error: 'Invalid customer ID' });
-    }
-
-    // Fetch bookings associated with the customer
-    const bookings = await Booking.find({ customerId }).sort({ showtime: -1 });
-
-    // If no bookings found
-    if (!bookings || bookings.length === 0) {
-      return res.status(404).json({ message: 'No bookings found for this customer' });
-    }
-
-    // Respond with booking data
-    res.status(200).json({ bookings });
+    res.status(200).json({ reviews });
   } catch (error) {
-    console.error('Error fetching booking records:', error);
-    res.status(500).json({ error: 'Unable to fetch booking records' });
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ error: 'Failed to fetch reviews.' });
   }
 };
 
-// Function to fetch a specific booking record by booking ID
-const getBookingDetails = async (req, res) => {
+/**
+ * Fetch a specific review by its ID.
+ */
+const getReviewById = async (req, res) => {
   try {
-    const { bookingId } = req.params; // Get bookingId from request parameters
+    const { reviewId } = req.params;
 
-    // Validate bookingId
-    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-      return res.status(400).json({ error: 'Invalid booking ID' });
+    const review = await Review.findById(reviewId)
+      .populate('movieId', 'title')
+      .populate('userId', 'name email');
+
+    if (!review) {
+      return res.status(404).json({ error: 'Review not found.' });
     }
 
-    // Fetch the booking by ID
-    const booking = await Booking.findById(bookingId);
-
-    // If no booking found
-    if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
-    }
-
-    // Respond with booking details
-    res.status(200).json({ booking });
+    res.status(200).json({ review });
   } catch (error) {
-    console.error('Error fetching booking details:', error);
-    res.status(500).json({ error: 'Unable to fetch booking details' });
+    console.error('Error fetching review:', error);
+    res.status(500).json({ error: 'Failed to fetch review.' });
+  }
+};
+
+/**
+ * Update a review's reply and status.
+ */
+const updateReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { reply, status } = req.body;
+
+    // Validate status, if provided
+    const validStatuses = ['open', 'closed'];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ error: `Invalid status. Allowed values: ${validStatuses.join(', ')}` });
+    }
+
+    const updatedReview = await Review.findByIdAndUpdate(
+      reviewId,
+      { reply, status },
+      { new: true } // Return the updated document
+    )
+      .populate('movieId', 'title')
+      .populate('userId', 'name email');
+
+    if (!updatedReview) {
+      return res.status(404).json({ error: 'Review not found.' });
+    }
+
+    res.status(200).json({ review: updatedReview });
+  } catch (error) {
+    console.error('Error updating review:', error);
+    res.status(500).json({ error: 'Failed to update review.' });
   }
 };
 
 module.exports = {
-  getBookingRecords,
-  getBookingDetails,
+  getAllReviews,
+  getReviewById,
+  updateReview,
 };
