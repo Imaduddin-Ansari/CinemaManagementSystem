@@ -14,6 +14,7 @@ const dashboardRoutes = require('./routes/employee_routes/dashboardRoutes');
 const bookingManagementRoutes = require('./routes/employee_routes/bookingManagementRoutes');
 const customerSupportRoutes = require('./routes/employee_routes/customerSupportRoutes');
 const shiftRoutes = require('./routes/employee_routes/shiftRoutes');
+const reportRoutes = require('./routes/employee_routes/reportRoutes');
 
 
 const app = express();
@@ -41,7 +42,7 @@ app.use('/employee', dashboardRoutes);
 app.use('/employee', bookingManagementRoutes);
 app.use('/api/customer-support', customerSupportRoutes);
 app.use('/api/shift-management', shiftRoutes);
-
+app.use('/api/reports', reportRoutes);
 // Database Connection
 connectDB();
 
