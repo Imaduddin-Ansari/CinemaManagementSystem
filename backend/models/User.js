@@ -14,14 +14,6 @@ const userSchema = new mongoose.Schema(
       phone: { type: String, default: '' },
       address: { type: String, default: '' },
     },
-    notifications: [
-      {
-        type: { type: String, enum: ['booking', 'marketing'] },
-        message: { type: String },
-        date: { type: Date, default: Date.now },
-        isRead: { type: Boolean, default: false },
-      },
-    ],
   },
   { timestamps: true }
 );

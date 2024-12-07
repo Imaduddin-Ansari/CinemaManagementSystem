@@ -4,8 +4,8 @@ const authenticate = require('../../middleware/auth');
 
 const router = express.Router();
 
-router.post('/add', authenticate, addToWishlist);
-router.delete('/remove', authenticate, removeFromWishlist);
-router.get('/', authenticate, getWishlist);
+router.post('/add', authenticate.authMiddleware, addToWishlist);
+router.delete('/remove', authenticate.authMiddleware, removeFromWishlist);
+router.get('/', authenticate.authMiddleware, getWishlist);
 
 module.exports = router;

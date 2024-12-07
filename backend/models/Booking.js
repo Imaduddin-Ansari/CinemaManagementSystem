@@ -12,6 +12,8 @@ const bookingSchema = new mongoose.Schema(
       status: { type: String, enum: ['success', 'failed', 'pending'], required: true },
     },
     status: { type: String, enum: ['confirmed', 'cancelled'], default: 'confirmed' },
+    printed: { type: Boolean, default: false }, // Indicates if a ticket was printed
+    handledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Employee who managed the booking
   },
   { timestamps: true }
 );

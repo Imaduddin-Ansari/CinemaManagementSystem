@@ -9,6 +9,9 @@ const bookingRoutes = require('./routes/user_routes/bookingRoutes');
 const reviewRoutes = require('./routes/user_routes//reviewRoutes');
 const wishlistRoutes = require('./routes/user_routes//wishlistRoutes');
 const cookieParser = require('cookie-parser');
+//Employee Routes
+const dashboardRoutes = require('./routes/employee_routes/dashboardRoutes');
+const bookingManagementRoutes = require('./routes/employee_routes/bookingManagementRoutes');
 
 const app = express();
 app.use(cookieParser());
@@ -23,12 +26,16 @@ app.use(cors({
 // Middleware
 app.use(bodyParser.json());
 
-// Routes
+// Routes User
 app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+
+// Routes Employee
+app.use('/employee', dashboardRoutes);
+app.use('/employee', bookingManagementRoutes);
 
 
 // Database Connection

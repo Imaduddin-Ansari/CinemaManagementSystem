@@ -17,4 +17,20 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+// Authorization Middleware for Admins
+const isAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied. Admins only.' });
+  }
+  next();
+};
+
+// Authorization Middleware for Employees
+const isEmployee = (req, res, next) => {
+  if (!req.user || req.user.role !== 'employee') {
+    return res.status(403).json({ message: 'Access denied. Employees only.' });
+  }
+  next();
+};
+
+module.exports = {authMiddleware,isAdmin, isEmployee};
