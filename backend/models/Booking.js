@@ -7,9 +7,9 @@ const bookingSchema = new mongoose.Schema(
     showtime: { type: Date, required: true },
     seats: [{ type: String, required: true }], // E.g., ['A1', 'A2']
     payment: {
-      transactionId: { type: String, required: true },
       amount: { type: Number, required: true },
       status: { type: String, enum: ['success', 'failed', 'pending'], required: true },
+      type:{type:String,enum:['Credit Card','Cash','Debit Card']}
     },
     status: { type: String, enum: ['confirmed', 'cancelled'], default: 'confirmed' },
     printed: { type: Boolean, default: false }, // Indicates if a ticket was printed

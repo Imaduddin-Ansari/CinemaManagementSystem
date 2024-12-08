@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar";
 import { Play, Info, X, Heart, Star } from "lucide-react";
 import { useGetTrendingContent } from "../../store/useGetTrendingContent";
@@ -15,6 +15,7 @@ export const HomePageUser = () => {
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
   const [stars, setStars] = useState(0);
+  const navigate=useNavigate();
 
   useEffect(() => {
     if (selectedMovie) {
@@ -33,6 +34,11 @@ export const HomePageUser = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
     console.log("Search query:", query);
+  };
+
+  const handleBooking = (movieId) => {
+    // Navigate to the booking page with movieId in the URL
+    navigate(`/user-book/${movieId}`);
   };
 
   const closeModal = () => setSelectedMovie(null);
@@ -193,12 +199,12 @@ export const HomePageUser = () => {
       </div>
 
       <div className="mt-6 flex justify-between">
-        <button
-          className="bg-red-700 text-white py-2 px-4 rounded hover:scale-110 transition hover:bg-red-900"
-          onClick={() => console.log("Booking functionality here")}
-        >
-          Book
-        </button>
+      <button
+              className="bg-red-700 text-white py-2 px-4 rounded hover:scale-110 transition hover:bg-red-900"
+              onClick={() => handleBooking(selectedMovie._id)} // Handle booking
+            >
+              Book
+            </button>
         <button
           className="bg-transparent text-white p-2 rounded-full"
           onClick={() => handleAddToWishlist(selectedMovie._id)}

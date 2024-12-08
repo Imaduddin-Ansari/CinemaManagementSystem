@@ -7,6 +7,7 @@ import {BookingPage } from "./pages/User/BookingPage";
 import {ProfilePage } from "./pages/User/ProfilePage";
 import {ReviewPage } from "./pages/User/ReviewPage";
 import {MyWishlistPage } from "./pages/User/MyWishlistPage";
+import { BookTicketPage } from "./pages/User/BookTicketPage";
 //Employee Panel
 import {HomePageEmployee} from "./pages/Employee/HomePageEmployee"
 //Admin Panel
@@ -24,6 +25,7 @@ function App() {
         <Route path="/user-profile" element={<ProfilePage />} />
         <Route path="/user-reviews" element={<ReviewPage />} />
         <Route path="/user-wishlist" element={<MyWishlistPage />} />
+        <Route path="/user-book/:movieId" element={<BookTicketPage />} />
         {/* Admin Routes  */}
         <Route path='/admin-dashboard' element={<HomePageAdmin/>}/>
         <Route path='/signup' element={<SignUpPage/>}/>
