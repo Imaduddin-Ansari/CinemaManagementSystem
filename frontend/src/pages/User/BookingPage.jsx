@@ -6,6 +6,7 @@ export const BookingPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     // Fetch user's booking history
@@ -22,6 +23,11 @@ export const BookingPage = () => {
 
     fetchBookings();
   }, []);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    console.log("Search query:", query);
+  };
 
   // Cancel a booking
   const cancelBooking = async (bookingId) => {
@@ -61,12 +67,13 @@ export const BookingPage = () => {
 
   return (
     <>
-      <Navbar userName="" />
+        <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
+      <Navbar userName="" onSearch={handleSearch}/>
       <div className="absolute top-24 p-8 font-poppins text-white w-full">
         <h1 className="text-4xl font-semibold text-white mb-8 text-center">My Bookings</h1>
 
         {loading ? (
-          <p className="text-center text-white">Loading your bookings...</p>
+          <p className="text-5xl text-center text-white">Loading your bookings...</p>
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : (
@@ -149,6 +156,7 @@ export const BookingPage = () => {
             )}
           </div>
         )}
+      </div>
       </div>
     </>
   );

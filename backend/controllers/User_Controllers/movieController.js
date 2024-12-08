@@ -3,7 +3,7 @@ const { fetchFromTMDB } = require('../../services/tmdb.service');
 
 // Add Movie
 exports.addMovie = async (req, res) => {
-  const { title, genre, releaseDate, rating, description, duration, posterUrl } = req.body;
+  const { title, genre, releaseDate, rating, description, duration, posterUrl, showtimes } = req.body;
   try {
     const newMovie = new Movie({
       title,
@@ -13,9 +13,28 @@ exports.addMovie = async (req, res) => {
       description,
       duration,
       posterUrl,
+      showtimes, // Accept showtimes from request body
     });
     await newMovie.save();
     res.status(201).json({ message: 'Movie added successfully', movieId: newMovie._id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.addShowtimes = async (req, res) => {
+  const { id } = req.params;
+  const { showtimes } = req.body; // Array of showtimes
+  try {
+    const movie = await Movie.findById(id);
+    if (!movie) return res.status(404).json({ error: 'Movie not found' });
+
+    // Add new showtimes, avoiding duplicates
+    const updatedShowtimes = [...new Set([...movie.showtimes, ...showtimes])];
+    movie.showtimes = updatedShowtimes;
+    await movie.save();
+
+    res.status(200).json({ message: 'Showtimes added successfully', showtimes: movie.showtimes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

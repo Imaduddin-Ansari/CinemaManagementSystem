@@ -24,6 +24,7 @@ const handleSignUp=async (e)=>{
     }
 }
 return ( 
+  <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
   <div class='h-auto w-2/5 bg-black overflow-hidden rounded-2xl p-9'> 
     <h2 class='text-5xl font-bold mb-6 text-center text-red-800 mt-3'> 
     CINEMOVIE
@@ -68,5 +69,6 @@ return (
       </div>
     </form> 
   </div> 
+  </div>
   ) 
 }

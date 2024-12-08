@@ -7,14 +7,16 @@ export const Navbar = ({ userName, onSearch }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const navigate = useNavigate(); // For redirect after logout
+  const navigate = useNavigate(); // For navigation after search
 
   const handleMenuToggle = () => setIsMenuOpen((prevState) => !prevState);
 
   const handleSearchChange = (event) => setSearchTerm(event.target.value);
+
   const handleSearchClick = () => {
     if (onSearch) {
       onSearch(searchTerm);
+      navigate(`/search?query=${searchTerm}`); // Navigate to search page with query
     }
   };
 

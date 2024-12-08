@@ -88,6 +88,7 @@ export const HomePageUser = () => {
   
 
   return (
+    <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
     <div className="flex flex-col w-full">
       {/* Navbar */}
       <Navbar userName="" onSearch={handleSearch} />
@@ -288,6 +289,7 @@ export const HomePageUser = () => {
     </div>
   </div>
 )}
+    </div>
     </div>
   );
 };

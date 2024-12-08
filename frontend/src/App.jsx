@@ -8,6 +8,8 @@ import {ProfilePage } from "./pages/User/ProfilePage";
 import {ReviewPage } from "./pages/User/ReviewPage";
 import {MyWishlistPage } from "./pages/User/MyWishlistPage";
 import { BookTicketPage } from "./pages/User/BookTicketPage";
+import { WatchPage } from "./pages/User/WatchPage";
+import { SearchPage } from "./pages/User/SearchPage";
 //Employee Panel
 import {HomePageEmployee} from "./pages/Employee/HomePageEmployee"
 //Admin Panel
@@ -15,7 +17,6 @@ import {HomePageAdmin} from "./pages/Admin/HomePageAdmin"
 
 function App() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
       <Routes>
         {/* Employee Routes */}
         <Route path='/employee-dashboard' element={<HomePageEmployee/>}/>
@@ -26,12 +27,13 @@ function App() {
         <Route path="/user-reviews" element={<ReviewPage />} />
         <Route path="/user-wishlist" element={<MyWishlistPage />} />
         <Route path="/user-book/:movieId" element={<BookTicketPage />} />
+        <Route path="/watch/:id" element={<WatchPage />} />
+        <Route path="/search" element={<SearchPage />} />
         {/* Admin Routes  */}
         <Route path='/admin-dashboard' element={<HomePageAdmin/>}/>
         <Route path='/signup' element={<SignUpPage/>}/>
         <Route path='/' element={<LoginPage/>}/>
       </Routes>
-    </div>
   )
 }
 

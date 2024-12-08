@@ -34,8 +34,8 @@ exports.bookTicket = async (req, res) => {
       });
     }
 
-    // Check if the requested seats are available for the given movie
-    const existingBookings = await Booking.find({ movie: movieId }).select('seats');
+    // Check if the requested seats are available for the given movie and showtime
+    const existingBookings = await Booking.find({ movie: movieId, showtime }).select('seats');
     const bookedSeats = existingBookings.reduce((acc, booking) => {
       return acc.concat(booking.seats);
     }, []);
@@ -64,6 +64,7 @@ exports.bookTicket = async (req, res) => {
     });
   }
 };
+
 
 // Get Booking History
 exports.getBookingHistory = async (req, res) => {

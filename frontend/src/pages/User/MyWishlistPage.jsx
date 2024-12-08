@@ -5,6 +5,7 @@ import { Navbar } from "../../components/Navbar";
 export const MyWishlistPage = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -36,15 +37,21 @@ export const MyWishlistPage = () => {
     }
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    console.log("Search query:", query);
+  };
+
   return (
     <>
-      <Navbar userName="" />
-      <div className="absolute top-28" style={{ fontFamily: 'Poppins, sans-serif' }}>
-        <h1 className="text-4xl font-bold mb-6 text-white">My Wishlist</h1>
+        <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex flex-col items-center justify-center relative overflow-hidden'>
+      <Navbar userName="" onSearch={handleSearch}/>
+      <div className="top-28" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <h1 className="mt-20 text-4xl font-bold text-white">My Wishlist</h1>
       </div>
       <div className="p-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
         {loading ? (
-          <p className="text-gray-500">Loading wishlist...</p>
+          <p className="text-5xl text-white">Loading wishlist...</p>
         ) : error ? (
           <p className="text-red-500">Error: {error}</p>
         ) : wishlist.length === 0 ? (
@@ -72,6 +79,7 @@ export const MyWishlistPage = () => {
             ))}
           </div>
         )}
+      </div>
       </div>
     </>
   );

@@ -9,6 +9,7 @@ const movieSchema = new mongoose.Schema(
     description: { type: String, required: true },
     duration: { type: Number, required: true }, // Duration in minutes
     posterUrl: { type: String, required: true },
+    showtimes: [{ type: Date, required: true }] // Array of showtimes
   },
   { timestamps: true }
 );

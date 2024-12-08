@@ -7,6 +7,7 @@ export const ReviewPage = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -25,12 +26,17 @@ export const ReviewPage = () => {
     fetchReviews();
   }, []);
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    console.log("Search query:", query);
+  };
+
   if (loading) {
     return (
       <>
-        <Navbar userName="John Doe" />
-        <div className="text-center mt-10">
-          <p className="text-2xl text-gray-700">Loading reviews...</p>
+        <Navbar userName="" onSearch={handleSearch}/>
+        <div className="min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden">
+          <p className="text-5xl text-white">Loading reviews...</p>
         </div>
       </>
     );
@@ -49,6 +55,7 @@ export const ReviewPage = () => {
 
   return (
     <>
+    <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
       <Navbar userName="" />
       <div
         className="fixed top-20 left-0 w-full h-[calc(100%-5rem)] overflow- bg-transparent text-white p-6"
@@ -111,6 +118,7 @@ export const ReviewPage = () => {
         ) : (
           <p className="text-xl text-center text-gray-400">No reviews found</p>
         )}
+      </div>
       </div>
     </>
   );

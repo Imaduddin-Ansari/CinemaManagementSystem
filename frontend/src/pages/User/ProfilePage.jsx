@@ -4,6 +4,7 @@ import axios from 'axios';
 import { HiPencilAlt } from 'react-icons/hi';
 
 export const ProfilePage = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -20,6 +21,11 @@ export const ProfilePage = () => {
   });
 
   const [editMode, setEditMode] = useState(false);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    console.log("Search query:", query);
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -69,7 +75,8 @@ export const ProfilePage = () => {
 
   return (
     <>
-      <Navbar userName="John Doe" />
+        <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
+      <Navbar userName="" onSearch={handleSearch}/>
       <div className="w-1/2 h-auto mx-auto p-8 bg-gradient-to-tl from-black to-red-950 rounded-lg shadow-2xl mt-10 text-white font-poppins">
         <h1 className="text-4xl font-semibold text-center mb-8">My Profile</h1>
         <form onSubmit={handleSubmit}>
@@ -139,13 +146,14 @@ export const ProfilePage = () => {
             {editMode && (
               <button
                 type="submit"
-                className="px-6 py-3 bg-red-950 text-lg text-lg text-white rounded-md hover:bg-red-800 transition-colors"
+                className="px-6 py-3 bg-red-950 text-lg text-white rounded-md hover:bg-red-800 transition-colors"
               >
                 Save Changes
               </button>
             )}
           </div>
         </form>
+      </div>
       </div>
     </>
   );
