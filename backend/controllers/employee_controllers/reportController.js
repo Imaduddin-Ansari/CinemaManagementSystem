@@ -123,9 +123,34 @@ const getReportById = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch report.' });
   }
 };
+// Function to delete a report
+const deleteReport = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(reportId)) {
+      return res.status(400).json({ error: 'Invalid report ID.' });
+    }
+
+    const report = await Report.findById(reportId);
+    
+    if (!report) {
+      return res.status(404).json({ error: 'Report not found.' });
+    }
+
+    await report.deleteOne();  // Delete the report from the database
+
+    res.status(200).json({ message: 'Report deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting report:', error);
+    res.status(500).json({ error: 'Failed to delete report.' });
+  }
+};
 
 module.exports = {
   generateReport,
   getAllReports,
   getReportById,
+  deleteReport,  // Export deleteReport function
 };
+
