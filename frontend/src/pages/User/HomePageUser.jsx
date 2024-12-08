@@ -37,9 +37,13 @@ export const HomePageUser = () => {
   };
 
   const handleBooking = (movieId) => {
-    // Navigate to the booking page with movieId in the URL
-    navigate(`/user-book/${movieId}`);
+    try {
+      navigate(`/user-book/${movieId}`);
+    } catch (error) {
+      alert("Error navigating to booking page: " + (error.message || "Unknown error"));
+    }
   };
+  
 
   const closeModal = () => setSelectedMovie(null);
 
@@ -52,10 +56,11 @@ export const HomePageUser = () => {
       );
       alert(response.data.message || "Movie added to wishlist");
     } catch (error) {
-      console.error("Error adding to wishlist:", error.response?.data?.error || error.message);
-      alert(error.response?.data?.error || "An error occurred while adding to the wishlist");
+      const errorMessage = error.response?.data?.error || error.message || "An error occurred while adding to the wishlist";
+      alert(errorMessage);
     }
   };
+  
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault(); // Prevent the form's default behavior
@@ -76,8 +81,8 @@ export const HomePageUser = () => {
       // Fetch updated reviews
       setReviews((prevReviews) => [...prevReviews, response.data.review]);
     } catch (error) {
-      console.error("Error submitting review:", error.message);
-      alert("An error occurred while submitting your review");
+      const errorMessage = error.response?.data?.error || error.message || "An error occurred while submitting your review";
+      alert(errorMessage);
     }
   };
   

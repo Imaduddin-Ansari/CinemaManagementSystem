@@ -1,13 +1,13 @@
-"use client";
-
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, ChevronDown, Search } from "lucide-react";
+import axios from "axios";
 
 export const Navbar = ({ userName, onSearch }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const navigate = useNavigate(); // For redirect after logout
 
   const handleMenuToggle = () => setIsMenuOpen((prevState) => !prevState);
 
@@ -22,6 +22,19 @@ export const Navbar = ({ userName, onSearch }) => {
     setIsSearchExpanded(!isSearchExpanded);
     if (isSearchExpanded) {
       handleSearchClick();
+    }
+  };
+
+  const logoutUser = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/users/logout");
+      if (response.data.success) {
+        // Redirect to home or login page
+        navigate("/");
+        alert("Successfully Logged Out")
+      }
+    } catch (error) {
+      console.error("Error logging out", error);
     }
   };
 
@@ -96,12 +109,12 @@ export const Navbar = ({ userName, onSearch }) => {
                 >
                   My Wishlist
                 </Link>
-                <Link
-                  to="/"
-                  className="block px-5 py-3 text-lg hover:bg-red-500 hover:text-white"
+                <button
+                  onClick={logoutUser} // Trigger logout
+                  className="block px-5 py-3 text-lg hover:bg-red-500 hover:text-white w-full text-left"
                 >
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>

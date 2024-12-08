@@ -25,7 +25,7 @@ const handleSignUp=async (e)=>{
 }
 return ( 
   <div class='h-auto w-2/5 bg-black overflow-hidden rounded-2xl p-9'> 
-    <h2 class='text-5xl font-bold mb-6 text-center text-transparent bg-clip-text text-red-700 mt-3'> 
+    <h2 class='text-5xl font-bold mb-6 text-center text-red-800 mt-3'> 
     CINEMOVIE
     </h2> 
     <h2 class='text-2xl font-bold mb-10 text-center text-transparent bg-clip-text text-white'>

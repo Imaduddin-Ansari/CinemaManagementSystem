@@ -40,7 +40,7 @@ export const MyWishlistPage = () => {
     <>
       <Navbar userName="" />
       <div className="absolute top-28" style={{ fontFamily: 'Poppins, sans-serif' }}>
-        <h1 className="text-3xl font-bold mb-6 text-white">My Wishlist</h1>
+        <h1 className="text-4xl font-bold mb-6 text-white">My Wishlist</h1>
       </div>
       <div className="p-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
         {loading ? (
@@ -50,7 +50,7 @@ export const MyWishlistPage = () => {
         ) : wishlist.length === 0 ? (
           <p className="text-gray-300">Your wishlist is empty.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16">
             {wishlist.map((movie) => (
               <div
                 key={movie._id}
@@ -59,7 +59,7 @@ export const MyWishlistPage = () => {
                 <img
                   src={movie.posterUrl}
                   alt={movie.title}
-                  className="w-32 h-48 object-cover rounded-lg mb-4"
+                  className="w-56 h-80 object-cover rounded-lg mb-4"
                 />
                 <h3 className="text-lg font-semibold text-center text-white">{movie.title}</h3>
                 <button

@@ -65,16 +65,15 @@ const loginUser = async (req, res) => {
   }
 };
 
-const logoutUser=async(req,res)=>{
+const logoutUser = async (req, res) => {
   try {
     res.clearCookie('token');
-    res.status(200).json({success:true,message:"Logged Out Successfully"});
-  } catch(error)
-  {
-    console.log("Error in Logout Controller",error.message);
-    rest.status(500).json({success:false,message:"Internal server error"});
+    res.status(200).json({ success: true, message: "Logged Out Successfully" });
+  } catch (error) {
+    console.log("Error in Logout Controller", error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-}
+};
 
 // View Profile
 const viewProfile = async (req, res) => {

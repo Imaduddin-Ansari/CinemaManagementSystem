@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "../../components/Navbar";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export const BookTicketPage = () => {
   const { movieId } = useParams();
+  const navigate = useNavigate(); // Hook to programmatically navigate
   const [movie, setMovie] = useState(null);
   const [showtime, setShowtime] = useState("");
   const [seats, setSeats] = useState([]);
@@ -76,6 +77,8 @@ export const BookTicketPage = () => {
         }
       } else {
         alert(response.data.message || "Booking successful!");
+        // Redirect to the /user-dashboard page after a successful booking
+        navigate("/user-dashboard");
       }
   
     } catch (error) {
