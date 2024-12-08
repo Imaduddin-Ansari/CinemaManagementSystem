@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from "../../components/Navbar";
 import axios from 'axios';
+import QRCode from 'react-qr-code';
 
 export const BookingPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [qrBookingId, setQrBookingId] = useState(null); // Booking ID for QR code
+  const [showModal, setShowModal] = useState(false); // Control modal visibility
 
   useEffect(() => {
-    // Fetch user's booking history
     const fetchBookings = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/bookings/history', { withCredentials: true });
@@ -29,17 +31,13 @@ export const BookingPage = () => {
     console.log("Search query:", query);
   };
 
-  // Cancel a booking
   const cancelBooking = async (bookingId) => {
     try {
-      // Make the API call to cancel the booking
-      const response = await axios.delete(`http://localhost:3000/api/bookings/${bookingId}/cancel`, { withCredentials: true });
-      
-      // Update the state with the canceled booking status
-      setBookings(prevBookings =>
-        prevBookings.map(booking => 
+      await axios.delete(`http://localhost:3000/api/bookings/${bookingId}/cancel`, { withCredentials: true });
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
           booking._id === bookingId
-            ? { ...booking, status: 'cancelled' }  // Change status to 'cancelled'
+            ? { ...booking, status: 'cancelled' }
             : booking
         )
       );
@@ -48,27 +46,23 @@ export const BookingPage = () => {
     }
   };
 
-  // Modify a booking (example for modifying seats)
   const modifyBooking = async (bookingId) => {
-    // You can implement a modal or a form to modify the booking here
     alert('Modify booking functionality is under construction.');
   };
 
-  // Generate e-Ticket
   const getETicket = (bookingId) => {
-    const booking = bookings.find((booking) => booking._id === bookingId);
-    if (booking) {
-      alert(`e-Ticket generated for Booking ID: ${bookingId}`);
-      // You can redirect to a page where users can view/download their e-ticket
-      // For example:
-      // window.location.href = `/download-e-ticket/${bookingId}`;
-    }
+    setQrBookingId(bookingId); // Set the booking ID
+    setShowModal(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setShowModal(false); // Close the modal
+    setQrBookingId(null); // Clear the QR booking ID
   };
 
   return (
-    <>
-        <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
-      <Navbar userName="" onSearch={handleSearch}/>
+    <div className='min-h-screen bg-gradient-to-br from-black to-red-950 flex items-center justify-center relative overflow-hidden '>
+      <Navbar userName="" onSearch={handleSearch} />
       <div className="absolute top-24 p-8 font-poppins text-white w-full">
         <h1 className="text-4xl font-semibold text-white mb-8 text-center">My Bookings</h1>
 
@@ -77,16 +71,15 @@ export const BookingPage = () => {
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : (
-          <div className="space-y-6 max-h-[500px] overflow-y-auto"> {/* Added scrollable area */}
+          <div className="space-y-6 max-h-[500px] overflow-y-auto">
             {bookings.length === 0 ? (
               <p className="text-center text-white">No bookings found.</p>
             ) : (
               bookings.map((booking) => (
                 <div
                   key={booking._id}
-                  className="bg-black p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 mb-6 relative" // Added relative position here
+                  className="bg-black p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 mb-6 relative"
                 >
-                  {/* Status Badge - Positioned at the top-right corner */}
                   <span
                     className={`absolute top-4 right-4 px-4 py-2 text-white font-semibold rounded-full ${
                       booking.status === 'confirmed' ? 'bg-green-500' : 'bg-red-500'
@@ -96,54 +89,34 @@ export const BookingPage = () => {
                   </span>
 
                   <div className="flex items-center justify-between mb-4">
-                    {/* Movie Poster */}
                     <img
                       src={booking.movie.posterUrl}
                       alt={booking.movie.title}
                       className="w-32 h-48 object-cover rounded-lg"
                     />
-
-                    {/* Movie Title and Showtime */}
                     <div className="ml-6 flex-1">
                       <h2 className="text-2xl font-semibold text-red-700">{booking.movie.title}</h2>
                       <p className="text-white">{new Date(booking.showtime).toLocaleString()}</p>
                     </div>
                   </div>
 
-                  <p className="text-lg text-gray-400"><strong>Seats : </strong>
-                  <span className="text-white">
-                   {booking.seats.join(', ')}
-                  </span>
-                  </p>
-                  <p className="text-lg text-gray-400"><strong>Payment Status : </strong>
-                  <span className="text-white">
-                  {booking.payment.status}
-                  </span>
-                   </p>
-                  <p className="text-lg text-gray-400"><strong>Total Amount : </strong>
-                  <span className="text-white">
-                  {booking.payment.amount} PKR
-                  </span>
-                   </p>
+                  <p className="text-lg text-gray-400"><strong>Seats: </strong><span className="text-white">{booking.seats.join(', ')}</span></p>
+                  <p className="text-lg text-gray-400"><strong>Payment Status: </strong><span className="text-white">{booking.payment.status}</span></p>
+                  <p className="text-lg text-gray-400"><strong>Total Amount: </strong><span className="text-white">{booking.payment.amount} PKR</span></p>
 
                   <div className="mt-4 flex justify-between gap-4">
-                    {/* Cancel Booking Button */}
                     <button
                       onClick={() => cancelBooking(booking._id)}
                       className="bg-red-700 py-2 px-6 hover:bg-red-900 text-white"
                     >
                       Cancel Booking
                     </button>
-
-                    {/* Modify Booking Button */}
                     <button
                       onClick={() => modifyBooking(booking._id)}
                       className="bg-red-700 py-2 px-6 hover:bg-red-900 text-white"
                     >
                       Modify Booking
                     </button>
-
-                    {/* Get E-Ticket Button */}
                     <button
                       onClick={() => getETicket(booking._id)}
                       className="bg-red-700 py-2 px-6 hover:bg-red-900 text-white"
@@ -157,7 +130,24 @@ export const BookingPage = () => {
           </div>
         )}
       </div>
-      </div>
-    </>
+
+      {/* Modal for QR Code */}
+      {showModal && qrBookingId && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <h2 className="text-xl font-bold mb-4 text-center">Your E-Ticket QR Code</h2>
+            <div className="flex justify-center mb-4">
+              <QRCode value={JSON.stringify({ bookingId: qrBookingId, movie: bookings.find(b => b._id === qrBookingId)?.movie })} />
+            </div>
+            <button
+              onClick={closeModal}
+              className="bg-red-700 py-2 px-6 w-full text-white hover:bg-red-900 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
