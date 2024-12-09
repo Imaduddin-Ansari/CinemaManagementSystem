@@ -3,8 +3,9 @@ const router = express.Router();
 const { 
   getBookings, 
   updateBooking, 
-  rebookCustomer, 
-  printTicket 
+  addBooking, 
+  printTicket,
+  checkAvailableSeats
 } = require('../../controllers/employee_controllers/bookingManagementController');
 const authenticate = require('../../middleware/auth');
 const { isEmployee } = require('../../middleware/auth');
@@ -15,9 +16,9 @@ router.get('/bookings',authenticate.authMiddleware,isEmployee, getBookings);
 router.put('/bookings/:id',authenticate.authMiddleware,isEmployee, updateBooking);
 
 // Route to rebook on behalf of a customer
-router.post('/bookings/rebook/:id',authenticate.authMiddleware,isEmployee, rebookCustomer);
+router.post('/bookings/addbooking',authenticate.authMiddleware,isEmployee, addBooking);
 
 // Route to print tickets
 router.get('/bookings/print/:id',authenticate.authMiddleware,isEmployee, printTicket);
-
+router.post("/check-available-seats",authenticate.authMiddleware,isEmployee, checkAvailableSeats);
 module.exports = router;

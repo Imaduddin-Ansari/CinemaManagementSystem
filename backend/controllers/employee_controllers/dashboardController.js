@@ -20,7 +20,7 @@ const getDashboardData = async (req, res) => {
     const bookingsOfTheDay = await Booking.find({
       showtime: { $gte: startOfDay, $lte: endOfDay },
       handledBy: employeeId,
-    });
+    }).populate('movie', 'title');
 
     // Fetch assigned duties (shifts)
     const assignedDuties = await Shift.find({
