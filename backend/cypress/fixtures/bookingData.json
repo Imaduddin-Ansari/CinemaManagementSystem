@@ -1,0 +1,11 @@
+{
+    "movieId": "675499592623ca15ea3ca32d",
+    "showtime": "2024-12-10T15:00:00.000+00:00",
+    "seats": [1, 2],
+    "payment": {
+      "amount": 30,
+      "status": "success",
+      "type": "Credit Card"
+    }
+  }
+  
